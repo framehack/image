@@ -63,7 +63,7 @@ func Draw(ctx context.Context, images []DrawParam) (io.Reader, error) {
 	}
 	dc := gg.NewContextForImage(images[0].Image)
 	for i := range images[1:] {
-		dc.DrawImage(images[i].Image, images[i].X, images[i].Y)
+		dc.DrawImage(images[i+1].Image, images[i+1].X, images[i+1].Y)
 	}
 
 	err := dc.EncodePNG(buf)
