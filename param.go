@@ -8,3 +8,9 @@ type DrawParam struct {
 	X     int         // x position
 	Y     int         // y position
 }
+
+// Canvas is the canvas for Draw
+type Canvas struct {
+	Width  int
+	Height int
+}

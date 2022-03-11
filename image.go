@@ -56,14 +56,36 @@ func LoadImageURL(ctx context.Context, url string) (image.Image, error) {
 }
 
 // Draw draw images
-func Draw(ctx context.Context, images []DrawParam) (io.Reader, error) {
+func Draw(ctx context.Context, args ...interface{}) (io.Reader, error) {
+	var images []DrawParam
+	var canvas Canvas
+	for _, arg := range args {
+		switch t := arg.(type) {
+		case []DrawParam:
+			images = append(images, t...)
+		case DrawParam:
+			images = append(images, t)
+		case Canvas:
+			canvas = t
+		}
+	}
 	buf := new(bytes.Buffer)
 	if len(images) == 0 {
 		return buf, fmt.Errorf("no images")
 	}
-	dc := gg.NewContextForImage(images[0].Image)
-	for i := range images[1:] {
-		dc.DrawImage(images[i+1].Image, images[i+1].X, images[i+1].Y)
+
+	// init context
+	var dc *gg.Context
+	if canvas.Width != 0 || canvas.Height != 0 {
+		dc = gg.NewContext(canvas.Width, canvas.Height)
+	} else {
+		dc = gg.NewContextForImage(images[0].Image)
+		images = images[1:]
+	}
+
+	// draw images
+	for i := range images {
+		dc.DrawImage(images[i].Image, images[i].X, images[i].Y)
 	}
 
 	err := dc.EncodePNG(buf)
