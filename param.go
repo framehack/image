@@ -1,10 +1,12 @@
 package image
 
-import "image"
+import (
+	"github.com/davidbyttow/govips/v2/vips"
+)
 
 // DrawParam is the param for Draw
 type DrawParam struct {
-	Image image.Image // image to Draw
+	Image *vips.ImageRef // image to Draw
 	X     int         // x position
 	Y     int         // y position
 }
