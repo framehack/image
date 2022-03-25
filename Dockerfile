@@ -1,0 +1,1 @@
+FROM wenning/govips:1.18

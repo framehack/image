@@ -7,6 +7,8 @@ import (
 )
 
 func TestDraw(t *testing.T) {
+	s := NewService()
+	defer s.Shutdown()
 	ctx := context.Background()
 	img1, err := LoadImageURL(ctx, "http://examples-1251000004.cos.ap-shanghai.myqcloud.com/sample.jpeg")
 	if err != nil {
@@ -27,7 +29,7 @@ func TestDraw(t *testing.T) {
 		X:     0,
 		Y:     0,
 	}
-	reader, err := Draw(ctx, images)
+	reader, err := s.Draw(ctx, images)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -44,9 +46,12 @@ func TestDraw(t *testing.T) {
 func TestDrawWithCanvas(t *testing.T) {
 	ctx := context.Background()
 	canvas := Canvas{
-		Width:  100,
-		Height: 100,
+		Width:  200,
+		Height: 800,
 	}
+	s := NewService()
+	defer s.Shutdown()
+
 	img1, err := LoadImageURL(ctx, "http://examples-1251000004.cos.ap-shanghai.myqcloud.com/sample.jpeg")
 	if err != nil {
 		t.Fatal(err)
@@ -66,7 +71,7 @@ func TestDrawWithCanvas(t *testing.T) {
 		X:     0,
 		Y:     0,
 	}
-	reader, err := Draw(ctx, images, canvas)
+	reader, err := s.Draw(ctx, images, canvas)
 	if err != nil {
 		t.Fatal(err)
 	}
