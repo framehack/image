@@ -59,8 +59,6 @@ func (s *Service)Draw(ctx context.Context, args ...interface{}) (io.Reader, erro
 	if len(images) == 0 {
 		return buf, fmt.Errorf("no images")
 	}
-	vips.Startup(nil)
-	defer vips.Shutdown() 
 	var bg *vips.ImageRef
 	var err error
 	if canvas.Width != 0 && canvas.Height != 0 {
