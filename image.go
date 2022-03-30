@@ -25,7 +25,7 @@ func (s *Service) Shutdown() {
 }
 
 // DrawWhiteCanvas draw white canvas
-func (s *Service) DrawWhiteCanvas(width, height int) (*vips.ImageRef, error){
+func (s *Service) DrawWhiteCanvas(width, height int) (*vips.ImageRef, error) {
 	bg, err := vips.Black(1, 1)
 	if err != nil {
 		return bg, err
@@ -42,9 +42,10 @@ func (s *Service) DrawWhiteCanvas(width, height int) (*vips.ImageRef, error){
 }
 
 // Draw draw images
-func (s *Service)Draw(ctx context.Context, args ...interface{}) (io.Reader, error) {
+func (s *Service) Draw(ctx context.Context, args ...interface{}) (io.Reader, error) {
 	var images []DrawParam
 	var canvas Canvas
+	var format = "jpeg"
 	for _, arg := range args {
 		switch t := arg.(type) {
 		case []DrawParam:
@@ -53,6 +54,8 @@ func (s *Service)Draw(ctx context.Context, args ...interface{}) (io.Reader, erro
 			images = append(images, t)
 		case Canvas:
 			canvas = t
+		case OutputPNG:
+			format = "png"
 		}
 	}
 	buf := new(bytes.Buffer)
@@ -75,8 +78,14 @@ func (s *Service)Draw(ctx context.Context, args ...interface{}) (io.Reader, erro
 	for i := range images {
 		bg.Composite(images[i].Image, vips.BlendModeOver, images[i].X, images[i].Y)
 	}
+	var ep *vips.ExportParams
+	switch format {
+	case "png":
+		ep = vips.NewDefaultPNGExportParams()
+	default:
+		ep = vips.NewDefaultJPEGExportParams()
+	}
 
-	ep := vips.NewDefaultPNGExportParams()
 	bytes, _, err := bg.Export(ep)
 	if err != nil {
 		return buf, err

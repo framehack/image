@@ -16,3 +16,8 @@ type Canvas struct {
 	Width  int
 	Height int
 }
+
+// OutputJPEG is the output format for Draw, default format
+type OutputJPEG struct {}
+// OutputPNG output png format
+type OutputPNG struct {}

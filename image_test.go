@@ -29,7 +29,7 @@ func TestDraw(t *testing.T) {
 		X:     0,
 		Y:     0,
 	}
-	reader, err := s.Draw(ctx, images)
+	reader, err := s.Draw(ctx, images, OutputPNG{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -79,7 +79,7 @@ func TestDrawWithCanvas(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = ioutil.WriteFile("test.png", b, 0644)
+	err = ioutil.WriteFile("test.jpg", b, 0644)
 	if err != nil {
 		t.Fatal(err)
 	}
