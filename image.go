@@ -42,7 +42,7 @@ func (s *Service) DrawWhiteCanvas(width, height int) (*vips.ImageRef, error) {
 }
 
 // Draw draw images
-func (s *Service) Draw(ctx context.Context, args ...interface{}) (io.Reader, error) {
+func (s *Service) Draw(ctx context.Context, args ...interface{}) (io.Reader, int, error) {
 	var images []DrawParam
 	var canvas Canvas
 	var format = "jpeg"
@@ -60,14 +60,14 @@ func (s *Service) Draw(ctx context.Context, args ...interface{}) (io.Reader, err
 	}
 	buf := new(bytes.Buffer)
 	if len(images) == 0 {
-		return buf, fmt.Errorf("no images")
+		return buf, 0, fmt.Errorf("no images")
 	}
 	var bg *vips.ImageRef
 	var err error
 	if canvas.Width != 0 && canvas.Height != 0 {
 		bg, err = s.DrawWhiteCanvas(canvas.Width, canvas.Height)
 		if err != nil {
-			return buf, err
+			return buf, 0, err
 		}
 	} else {
 		bg = (images[0].Image)
@@ -88,8 +88,8 @@ func (s *Service) Draw(ctx context.Context, args ...interface{}) (io.Reader, err
 
 	bytes, _, err := bg.Export(ep)
 	if err != nil {
-		return buf, err
+		return buf, 0, err
 	}
 	_, err = buf.Write(bytes)
-	return buf, err
+	return buf, len(bytes), err
 }
